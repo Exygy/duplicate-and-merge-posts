@@ -158,7 +158,7 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 			switch (is_admin()) :
 				case true :
 					/* loads admin files */
-
+					require_once 'admin/settings.php';
 
 
 					BREAK;
