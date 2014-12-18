@@ -346,8 +346,8 @@ if ( ! class_exists('cnSettingsAPI') )
 					'help' => isset( $field['help'] ) ? $field['help'] : '',
 					'show_option_none' => isset( $field['show_option_none'] ) ? $field['show_option_none'] : '',
 					'option_none_value' => isset( $field['option_none_value'] ) ? $field['option_none_value'] : '',
-					'options' => isset( $field['options'] ) ? $field['options'] : array()/*,
-					'default' => isset( $field['default'] ) && ! empty( $field['default'] ) ? $field['default'] : FALSE,*/
+					'options' => isset( $field['options'] ) ? $field['options'] : array(),
+					'default' => isset( $field['default'] ) && ! empty( $field['default'] ) ? $field['default'] : FALSE
 				);
 
 				/*
@@ -628,8 +628,14 @@ if ( ! class_exists('cnSettingsAPI') )
 
 					foreach ( $field['options'] as $key => $label )
 					{
-						$checked = checked( TRUE , in_array($key, $value) , FALSE );
-
+						if(is_array($value)) {
+							$checked = checked( TRUE , in_array($key, $value) , FALSE );
+						} else if (is_array($field['default'])) {
+							$checked = checked( TRUE , in_array($key, $field['default']) , FALSE );;
+						} else {
+							$checked = "";
+						}
+						//$out .= print_r($field['default']);
 						$out .= sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s]" name="%1$s[]" value="%2$s"%3$s/>', $name, $key, $checked );
 						$out .= sprintf( '<label for="%1$s[%2$s]"> %3$s</label><br />', $name, $key, $label );
 					}

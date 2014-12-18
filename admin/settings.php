@@ -90,20 +90,9 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 		}
 
 		public function fields( $fields ) {
-			// Test Fields -- Remove before release.
-			$fields[] = array(
-				'plugin_id' => 'dem',
-				'id' => 'checkbox_test',
-				'position' => 5,
-				'page_hook' => 'toplevel_page_settings_dem',
-				'tab' => 'basic',
-				'section' => 'basic_one',
-				'title' => __('Checkbox', 'dem'),
-				'desc' => __('Checkbox Label.', 'dem'),
-				'help' => __('testing'),
-				'type' => 'checkbox',
-				'default' => 1
-			);
+			global $wp_roles;
+     		$roles = $wp_roles->get_names();
+     		//print_r($roles);
 
 			$fields[] = array(
 				'plugin_id' => 'dem',
@@ -119,116 +108,37 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'size' => 'large',
 				'default' => 'LARGE TEXT AREA'
 			);
-			$fields[] = array(
-				'plugin_id' => 'dem',
-				'id' => 'text_regular',
-				'position' => 28,
-				'page_hook' => 'toplevel_page_settings_dem',
-				'tab' => 'basic',
-				'section' => 'basic_one',
-				'title' => __('Regular Text', 'dem'),
-				'desc' => __('Regular Text Label', 'dem'),
-				'help' => __(''),
-				'type' => 'text',
-				'size' => 'regular',
-				'default' => 'Regular'
-			);
+
 
 			$fields[] = array(
 				'plugin_id' => 'dem',
-				'id' => 'text_large',
-				'position' => 29,
-				'page_hook' => 'toplevel_page_settings_dem',
-				'tab' => 'basic',
-				'section' => 'basic_one',
-				'title' => __('Large Text', 'dem'),
-				'desc' => __('Large Text Label', 'dem'),
-				'help' => __(''),
-				'type' => 'text',
-				'size' => 'large',
-				'default' => 'LARGE'
-			);
-
-			$fields[] = array(
-				'plugin_id' => 'dem',
-				'id' => 'multicheck_test',
+				'id' => 'edit_access',
 				'position' => 21,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'basic_one',
-				'title' => __('Multi-Checkbox', 'dem'),
-				'desc' => __('Multi-Checkbox Label', 'dem'),
+				'title' => __('Duplicate/Edit Access Level:', 'dem'),
+				'desc' => __('What user types will have access to duplicate and edit posts (NOT MERGE)', 'dem'),
 				'help' => __(''),
 				'type' => 'multicheckbox',
-				'options' => array(
-					'one' => 'One',
-					'two' => 'Two',
-					'three' => 'Three',
-					'four' => 'Four'
-				),
-				'default' => array( 'one' , 'three' )
+				'options' => $roles,
+				'default' => array( 'administrator' , 'editor', 'author' )
 			);
 			$fields[] = array(
 				'plugin_id' => 'dem',
-				'id' => 'radio_test',
+				'id' => 'merge_access',
 				'position' => 22,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'basic_one',
-				'title' => __('Radio', 'dem'),
-				'desc' => __('Radio Label', 'dem'),
+				'title' => __('Merge Access Level:', 'dem'),
+				'desc' => __('What user types will have access to duplicate, edit posts', 'dem'),
 				'help' => __(''),
-				'type' => 'radio',
-				'options' => array(
-					'yes' => 'Yes',
-					'no' => 'No'
-				),
-				'default' => 'yes'
+				'type' => 'multicheckbox',
+				'options' => $roles,
+				'default' => array( 'administrator' , 'editor' )
 			);
-			$fields[] = array(
-				'plugin_id' => 'dem',
-				'id' => 'select_test',
-				'position' => 23,
-				'page_hook' => 'toplevel_page_settings_dem',
-				'tab' => 'basic',
-				'section' => 'basic_one',
-				'title' => __('Select', 'dem'),
-				'desc' => __('Select Label', 'dem'),
-				'help' => __(''),
-				'type' => 'select',
-				'options' => array(
-					'one' => 'One',
-					'two' => 'Two',
-					'three' => 'Three',
-					'four' => 'Four'
-				),
-				'default' => 'two'
-			);
-			$fields[] = array(
-				'plugin_id' => 'dem',
-				'id' => 'multi_select_test',
-				'position' => 24,
-				'page_hook' => 'toplevel_page_settings_dem',
-				'tab' => 'basic',
-				'section' => 'basic_one',
-				'title' => __('Multi-Select', 'dem'),
-				'desc' => __('Multi-Select Label', 'dem'),
-				'help' => __(''),
-				'type' => 'multiselect',
-				'options' => array(
-									'one' => 'One',
-									'two' => 'Two',
-									'three' => 'Three',
-									'four' => 'Four',
-									'five' => 'Five',
-									'six' => 'Six',
-									'seven' => 'Seven',
-									'eight' => 'Eight',
-									'nine' => 'Nine',
-									'ten' => 'Ten'
-				),
-				'default' => array( 'two' , 'four' )
-			);
+
 
 			return $fields;
 		}
