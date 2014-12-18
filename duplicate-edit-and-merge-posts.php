@@ -108,14 +108,17 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 
 		/* Include required plugin files */
 		private static function includes() {
-			require_once 'admin/duplicate-post.php';
 
+			$settings = get_option('dem_main_settings');
+			require_once 'admin/duplicate-post.php';
 			// Check if current user is allowed to submit review to current post
 			add_filter("duplicate_post_is_allowed",function($allowed){
 			  $qo = get_queried_object();
 
 			  // Allow the user to duplicate post if they have the "author" role
-			  if(current_user_can("author")) return true;
+			  if(current_user_can("author")) {
+			  	return true;
+			  }
 
 			  if(isset($qo->ID)){
 			    if( function_exists("is_coauthor_for_post")){
@@ -140,10 +143,9 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 			  ) );
 			},10,4);
 
-			$admin_emails = array();
-			foreach(get_users(array("role"=>"administrator")) as $admin){
-			  $admin_emails[] = $admin->data->user_email;
-			}
+
+			$emails = explode("\n", $settings['notify_emails']);
+
 			// TODO move admin emails to class
 			DuplicatePost::_init(array(
 			  "duplicate_post_title_prefix" => "Proposed Update: ",
@@ -151,7 +153,7 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 			  "duplicate_post_show_row" => true,
 			  "duplicate_post_show_submitbox" => true,
 			  // "duplicate_post_add_nofollow_noindex" => true,
-			  "duplicate_post_global_admins" => $admin_emails
+			  "duplicate_post_global_admins" => $emails
 			));
 
 

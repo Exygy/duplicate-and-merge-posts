@@ -69,7 +69,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 		public function sections( $sections ) {
 			$sections[] = array(
 				'tab' => 'basic' ,
-				'id' => 'basic_one' ,
+				'id' => 'dem_main_settings' ,
 				'position' => 10 ,
 				'title' => __( 'Main Settings' , 'dem' ) ,
 				'callback' => false,
@@ -100,13 +100,13 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'position' => 1,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
-				'section' => 'basic_one',
+				'section' => 'dem_main_settings',
 				'title' => __('Admin Emails', 'dem'),
 				'desc' => __('Enter notification emails one per line', 'dem'),
 				'help' => __(''),
 				'type' => 'textarea',
 				'size' => 'large',
-				'default' => 'LARGE TEXT AREA'
+				'default' => 'your@email.com'
 			);
 
 
@@ -116,7 +116,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'position' => 21,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
-				'section' => 'basic_one',
+				'section' => 'dem_main_settings',
 				'title' => __('Duplicate/Edit Access Level:', 'dem'),
 				'desc' => __('What user types will have access to duplicate and edit posts (NOT MERGE)', 'dem'),
 				'help' => __(''),
@@ -130,7 +130,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'position' => 22,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
-				'section' => 'basic_one',
+				'section' => 'dem_main_settings',
 				'title' => __('Merge Access Level:', 'dem'),
 				'desc' => __('What user types will have access to duplicate, edit posts', 'dem'),
 				'help' => __(''),
