@@ -112,24 +112,7 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 			$settings = get_option('dem_main_settings');
 			require_once 'admin/duplicate-post.php';
 			// Check if current user is allowed to submit review to current post
-			add_filter("duplicate_post_is_allowed",function($allowed){
-			  $qo = get_queried_object();
 
-			  // Allow the user to duplicate post if they have the "author" role
-			  if(current_user_can("author")) {
-			  	return true;
-			  }
-
-			  if(isset($qo->ID)){
-			    if( function_exists("is_coauthor_for_post")){
-			      // Allow the user to duplicate post if have the contributor role AND are a coauthor for the post, OR they are admin
-			      return ( is_coauthor_for_post(get_current_user_id(), $qo->ID) && current_user_can("contributor") ) || current_user_can("administrator");
-			    }
-			    // If Coathor plugin is not activated, allow the user to duplicate post if they are the author of the post, OR they are admin
-			    return get_current_user_id() == $qo->post_author || current_user_can("administrator");
-			  }
-			  return $allowed;
-			});
 
 			// Message that is sent to Admins
 			add_filter("duplicate_post_notification_message", function($message, $post, $new_post, $current_user){

@@ -92,6 +92,16 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 		public function fields( $fields ) {
 			global $wp_roles;
      		$roles = $wp_roles->get_names();
+     		$args = array(
+     		   'public'   => true,
+
+     		);
+
+     		$output = 'names'; // names or objects, note names is the default
+     		$operator = 'and'; // 'and' or 'or'
+
+     		$post_types = get_post_types( $args, $output, $operator );
+     		unset($post_types['attachment']);
      		//print_r($roles);
 
 			$fields[] = array(
@@ -113,7 +123,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 			$fields[] = array(
 				'plugin_id' => 'dem',
 				'id' => 'edit_access',
-				'position' => 21,
+				'position' => 4,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'dem_main_settings',
@@ -127,7 +137,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 			$fields[] = array(
 				'plugin_id' => 'dem',
 				'id' => 'merge_access',
-				'position' => 22,
+				'position' => 6,
 				'page_hook' => 'toplevel_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'dem_main_settings',
@@ -137,6 +147,19 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'type' => 'multicheckbox',
 				'options' => $roles,
 				'default' => array( 'administrator' , 'editor' )
+			);
+			$fields[] = array(
+				'plugin_id' => 'dem',
+				'id' => 'exclude_post_types',
+				'position' => 22,
+				'page_hook' => 'toplevel_page_settings_dem',
+				'tab' => 'basic',
+				'section' => 'dem_main_settings',
+				'title' => __('Exclude Post Types:', 'dem'),
+				'desc' => __('What types of posts do you want to exclude?', 'dem'),
+				'help' => __(''),
+				'type' => 'multicheckbox',
+				'options' => $post_types
 			);
 
 

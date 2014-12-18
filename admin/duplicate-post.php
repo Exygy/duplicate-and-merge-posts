@@ -45,6 +45,7 @@ class DuplicatePost{
 
 	private function init( $options_to_set=null ){
 		if($options_to_set == null) $options_to_set = array();
+
 		$this->options = array_merge( $this->default_options, $options_to_set );
 		$this->add_filters();
 		$this->add_actions();
@@ -67,8 +68,49 @@ class DuplicatePost{
 	 * Test if the user is allowed to copy posts
 	 */
 	static function duplicate_post_is_current_user_allowed_to_copy() {
+		global $post;
   		$qo = get_queried_object();
-		$allowed = current_user_can('copy_posts') || current_user_can("administrator") || get_current_user_id() == $qo->post_author || current_user_can("edit_posts");
+  		$allowed = false;
+  		$settings = get_option('dem_main_settings');
+	  	$current_user = wp_get_current_user();
+
+	  	if($qo){
+	  		$authorID = $qo->post_author;
+	  		$postType = $qo->post_type;
+	  	} else {
+	  		if(isset($post)){
+	  			$authorID = $post->post_author;
+	  			$postType = $post->post_type;
+	  		} else {
+	  			$authorID = 0;
+	  		}
+	  	}
+
+	  	$current_roles = $current_user->roles;
+	  	foreach ($current_roles as $key => $role) {
+	  		//echo $value;
+	  		if(isset($settings['edit_access'])) {
+	  			if(in_array($role, $settings['edit_access'])){
+	  			$allowed = true;
+	  			//echo "YES". $value;
+	  			}
+	  		}
+
+	  	}
+
+	  	/* by default post author can copy but not merge back */
+	  	if($current_user->ID == $authorID){
+	  		$allowed = true;
+	  	}
+
+	  	/* Exclude post types from settings */
+	  	if(isset($settings['exclude_post_types'])) {
+	  		if(in_array($postType, $settings['exclude_post_types'])){
+	  			$allowed = false;
+	  		}
+	  	}
+
+
 		return apply_filters( "duplicate_post_is_allowed", $allowed );
 	}
 
@@ -76,7 +118,18 @@ class DuplicatePost{
 	 * Test if the user can merge back
 	 */
 	static function duplicate_post_is_current_user_allowed_to_merge_back() {
-		$allowed = current_user_can("administrator");
+		$allowed = false;
+		$settings = get_option('dem_main_settings');
+	  	$current_user = wp_get_current_user();
+	  	$current_roles = $current_user->roles;
+	  	foreach ($current_roles as $key => $role) {
+	  		//echo $value;
+	  		if(in_array($role, $settings['merge_access'])){
+	  			$allowed = true;
+	  			//echo "YES". $value;
+	  		}
+	  	}
+
 		return apply_filters( "duplicate_post_is_allowed_merge_back", $allowed );
 	}
 
@@ -213,7 +266,7 @@ class DuplicatePost{
 
 
 	public function add_cloned_doc_action_buttons(){
-	  global $pagenow ;
+	  global $pagenow, $post;
 
 	  if ( $pagenow  == 'post.php' && isset( $_GET['action'] ) && $_GET['action'] == 'edit' && isset( $_GET['post'] ) ) {
 
@@ -225,6 +278,18 @@ class DuplicatePost{
 
 	      $merge_label = "Merge back to Original Post";
 	      $submit_label = "Submit update for review";
+
+	    $settings = get_option('dem_main_settings');
+	  	$current_user = wp_get_current_user();
+	  	$current_roles = $current_user->roles;
+	  	foreach ($current_roles as $key => $value) {
+	  		//echo $value;
+	  		if(in_array($value, $settings['merge_access'])){
+	  			$allowed = true;
+	  			echo "YES". $value;
+	  		}
+	  	}
+
 	      ?>
 	      <div id="publishing-action-update">
 	          <span class="spinner"></span>
@@ -776,7 +841,25 @@ class DuplicatePost{
 	}
 
 	function duplicate_post_add_duplicate_post_button() {
-		if ( isset( $_GET['post'] ) && DuplicatePost::duplicate_post_is_current_user_allowed_to_copy()) {
+		$allowed = DuplicatePost::duplicate_post_is_current_user_allowed_to_copy();
+
+		/*global $post;
+  		$qo = get_queried_object();
+  		$allowed = false;
+  		$settings = get_option('dem_main_settings');
+	  	$current_user = wp_get_current_user();
+
+	  	if($qo){
+	  		$authorID = $qo->post_author;
+	  	} else {
+	  		if(isset($post)){
+	  			$authorID = $post->post_author;
+	  		} else {
+	  			$authorID = 0;
+	  		}
+	  	}*/
+
+		if ( isset( $_GET['post'] ) && $allowed) {
 			?>
 				<div id="duplicate-action">
 					<a style="width: 100%;text-align: center;margin-bottom: 10px;" class="submitduplicate duplication button" href="<?php echo DuplicatePost::duplicate_post_get_clone_post_link( $_GET['post'] ) ?>">

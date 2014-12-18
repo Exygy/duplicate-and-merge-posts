@@ -626,18 +626,30 @@ if ( ! class_exists('cnSettingsAPI') )
 				case 'multicheckbox':
 					if ( isset($field['desc']) && ! empty($field['desc']) ) $out .= sprintf( '<span class="description">%s</span><br />', $field['desc'] );
 
+
+					$count = count($field['options']);
+					$loopCount = 0;
 					foreach ( $field['options'] as $key => $label )
 					{
+
+
 						if(is_array($value)) {
 							$checked = checked( TRUE , in_array($key, $value) , FALSE );
 						} else if (is_array($field['default'])) {
-							$checked = checked( TRUE , in_array($key, $field['default']) , FALSE );;
+							$checked = checked( TRUE , in_array($key, $field['default']) , FALSE );
+							$checked = '';
 						} else {
 							$checked = "";
 						}
-						//$out .= print_r($field['default']);
+
 						$out .= sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s]" name="%1$s[]" value="%2$s"%3$s/>', $name, $key, $checked );
 						$out .= sprintf( '<label for="%1$s[%2$s]"> %3$s</label><br />', $name, $key, $label );
+						//$out .= $loopCount . " ". $count;
+						if( $count === $loopCount + 1) {
+							$key = 'hidden_dem_value';
+							$out .= sprintf( '<input style="display:none;" type="checkbox" id="%1$s[%2$s]" name="%1$s[]" value="hidden_dem_value" checked/>', $name, $key );
+						}
+						$loopCount++;
 					}
 
 					break;
