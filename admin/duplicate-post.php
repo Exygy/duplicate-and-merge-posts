@@ -270,6 +270,8 @@ class DuplicatePost{
 	  if ( $pagenow  == 'post.php' && isset( $_GET['action'] ) && $_GET['action'] == 'edit' && isset( $_GET['post'] ) ) {
 	  	$submitted_count = get_post_meta($post->ID,"_dp_submited", true);
 	    $original_post_id = get_post_meta($_GET['post'], '_dp_original', true);
+
+
 	    if($original_post_id){
 	      $label = "Update";
 	  	  $allow_submit_for_review = DuplicatePost::duplicate_post_is_current_user_allowed_to_copy();
@@ -300,25 +302,42 @@ class DuplicatePost{
 	          <?php endif; ?>
 
 	          <?php if ($allow_submit_for_review ): ?>
-	          	<?php $class = ""; if($submitted_count > 0 ){
+	          	<?php $class = "";
+
+	          	if($submitted_count > 0 ){
 	          		$class=" waiting";
 	          		$submit_label = "Submit update for another review";
 	          	?>
-	            <span style="text-align:center; display:block;">Update Submitted, awaiting approval</span>
+	            <span id="update-waiting">Update Submitted, awaiting approval</span>
 	            <?php } ?>
+
 	            <input name="submit_for_review" type="submit" class="button button-primary button-large<?php echo $class;?>" id="submit_for_review" value="<?php echo $submit_label; ?>">
 
 	          <?php endif ?>
 
 	          <?php if ($allow_merge_back): ?>
 	            <input name="merge_back" type="submit" class="button button-primary button-large" id="merge_back" value="<?php echo $merge_label; ?>">
+
+	            <input name="save_as_new" type="submit" class="button save_as_new button-primary button-large" id="save_as_new" value="Save as New Post">
+	            <input name="save_as_new_id" type="hidden" id="save_as_new_id" value="<?php echo $original_post_id;?>">
 	          <?php endif ?>
 	      </div>
 	      <style type="text/css">
+	      	#update-waitng{
+	      		text-align:center; display:block;
+	      	}
 	        #publishing-action-update >*{
 	          margin-bottom:5px;
 	          width:100%;
 	          text-align: center;
+	        }
+	        .button.button-primary.button-large.save_as_new {
+	        	background: rgb(0, 144, 0);
+				border-color: rgb(0, 144, 0);
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				color: #fff;
+				text-decoration: none;
 	        }
 	        .button.button-primary.button-large.waiting {
 				background: #5E757E;
@@ -349,7 +368,30 @@ class DuplicatePost{
 
 	  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 	    return;
-
+ // $new_post_id = get_post_meta($post_id, '_dp_original_backup', true);
+ // $original_post_id = get_post_meta($post_id, '_dp_original', true);
+ // echo $post_id;
+ // echo $new_post_id;
+ // echo "<br>xxx";
+ // echo $original_post_id;
+ // exit;
+		/* Save as new Post */
+		if(isset($_POST["save_as_new"])) {
+			//echo $_POST["save_as_new"];
+			$original_post_id = get_post_meta($post_id, '_dp_original', true);
+			if(!$original_post_id){
+				$original_post_id = $_POST['save_as_new_id'];
+			}
+			update_post_meta($post_id, "_dp_original_backup", $original_post_id);
+			/* then delete */
+			delete_post_meta($post_id, '_dp_original');
+		}
+		if(isset($_POST['revert_back_to_cloned'])) {
+			$o_post_id = get_post_meta($post_id, '_dp_original_backup', true);
+			update_post_meta($post_id, "_dp_original", $o_post_id);
+			//echo 'yes' . $original_post_id;
+		}
+		//exit;
 	  // Only allow if its a merge back or submit for review
 	  if(!isset($_POST["merge_back"]) && !isset($_POST["submit_for_review"]))
 	    return;
@@ -364,7 +406,9 @@ class DuplicatePost{
 	    if(isset($_POST["merge_back"])){
 	      if( $allow_merge_back ){
 
+	      	delete_post_meta($_POST['post_ID'], '_dp_original_backup');
 	        // Unset the merge_back to prevent infinite loop after calling _save_to_original()
+
 	        unset($_POST["merge_back"]);
 
 	        DuplicatePost::_save_to_original( $post_id );
@@ -865,9 +909,9 @@ class DuplicatePost{
 			$actions['clone'] = '<a href="'.DuplicatePost::duplicate_post_get_clone_post_link( $post->ID , 'display', false).'" title="'
 			. esc_attr(__("Clone this item", 'dem'))
 			. '">' .  __('Clone', 'dem') . '</a>';
-			$actions['edit_as_new_draft'] = '<a href="'. DuplicatePost::duplicate_post_get_clone_post_link( $post->ID ) .'" title="'
+			/*$actions['edit_as_new_draft'] = '<a href="'. DuplicatePost::duplicate_post_get_clone_post_link( $post->ID ) .'" title="'
 			. esc_attr(__('Copy to a new draft', 'dem'))
-			. '">' .  __('New Draft', 'dem') . '</a>';
+			. '">' .  __('New Draft', 'dem') . '</a>';*/
 		}
 		return $actions;
 	}
@@ -892,11 +936,26 @@ class DuplicatePost{
 	  	}*/
 
 		if ( isset( $_GET['post'] ) && $allowed) {
+			$backup = get_post_meta($_GET['post'], '_dp_original_backup', true);
 			?>
 				<div id="duplicate-action">
 					<a style="width: 100%;text-align: center;margin-bottom: 10px;" class="submitduplicate duplication button" href="<?php echo DuplicatePost::duplicate_post_get_clone_post_link( $_GET['post'] ) ?>">
 						<?php _e('Duplicate and Edit', 'dem'); ?>
 					</a>
+					<?php if($backup){ ?>
+						<input name="revert_back_to_cloned" type="submit" class="button revert_back_to_cloned button-primary button-large" id="revert_back_to_cloned" value="Ooops. Undo Post Unlink">
+						<style type="text/css">
+						#revert_back_to_cloned {
+							background: rgb(214, 8, 8);
+							border:rgb(214, 8, 8);
+							width: 100%;
+							margin-bottom: 10px;
+							color: white;
+							box-shadow: none;
+							-webkit-box-shadow: none;
+						}
+						</style>
+					<?php } ?>
 				</div>
 			<?php
 		}
@@ -904,7 +963,7 @@ class DuplicatePost{
 
 	function duplicate_post_save_to_original(){
 		if ( isset( $_GET['post'] ) ){
-			$original_post_id = get_post_meta( $_GET["post"] , '_dp_original', true);
+			$original_post_id = get_post_meta( $_GET["post"], '_dp_original', true);
 			if($original_post_id){
 				$this->save_to_original( $_GET["post"] );
 
@@ -1108,7 +1167,7 @@ class DuplicatePost{
 		}
 
 		$new_post_id = wp_insert_post($new_post);
-
+		delete_post_meta($new_post_id, '_dp_original_backup');
 		// If the copy is published or scheduled, we have to set a proper slug.
 		if($to_post_id == ''){
 			if ($new_post_status == 'publish' || $new_post_status == 'future'){
