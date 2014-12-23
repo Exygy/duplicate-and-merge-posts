@@ -115,16 +115,16 @@ if (!class_exists('Duplicate_And_Merge_Plugin')) {
 
 
 			// Message that is sent to Admins
-			add_filter("duplicate_post_notification_message", function($message, $post, $new_post, $current_user){
-			  return implode( array(
-			    "An update has been posted for ",
-			    "<a href='".get_permalink($post->ID)."'>'".$post->post_title."'</a>.",
-			    "by ".$current_user->display_name,
-			    " To review the update follow the link ",
-			    "<a href='".get_permalink($new_post->ID)."'>'".$new_post->post_title."'</a>. ",
-			    "<a href='".admin_url("edit.php").'?page=show-diff&post='.$new_post->ID."'>Click here</a> to view changes side-by-side."
-			  ) );
-			},10,4);
+			// add_filter("duplicate_post_notification_message", function($message, $post, $new_post, $current_user){
+			//   return implode( array(
+			//     "An update has been posted for ",
+			//     "<a href='".get_permalink($post->ID)."'>'".$post->post_title."'</a>.",
+			//     "by ".$current_user->display_name,
+			//     "<br><br> To review the update follow the link ",
+			//     "<a href='".get_permalink($new_post->ID)."'>'".$new_post->post_title."'</a>. ",
+			//     "<a href='".admin_url("edit.php").'?page=show-diff&post='.$new_post->ID."'>Click here</a> to view changes side-by-side."
+			//   ) );
+			// },10,4);
 
 			$emails = explode("\n", $settings['notify_emails']);
 

@@ -264,12 +264,11 @@ class DuplicatePost{
 	  }
 	}
 
-
 	public function add_cloned_doc_action_buttons(){
 	  global $pagenow, $post;
 
 	  if ( $pagenow  == 'post.php' && isset( $_GET['action'] ) && $_GET['action'] == 'edit' && isset( $_GET['post'] ) ) {
-
+	  	$submitted_count = get_post_meta($post->ID,"_dp_submited", true);
 	    $original_post_id = get_post_meta($_GET['post'], '_dp_original', true);
 	    if($original_post_id){
 	      $label = "Update";
@@ -286,7 +285,7 @@ class DuplicatePost{
 	  		//echo $value;
 	  		if(in_array($value, $settings['merge_access'])){
 	  			$allowed = true;
-	  			echo "YES". $value;
+	  			//echo "YES". $value;
 	  		}
 	  	}
 
@@ -296,12 +295,19 @@ class DuplicatePost{
 	          <input name="original_publish" type="hidden" id="original_publish" value="Update">
 	            <a class="button" href="<?php echo get_permalink($original_post_id); ?>">Go to original post</a>
 
-	          <?php if ($allow_merge_back): ?>
+	          <?php if ($allow_merge_back || $allow_submit_for_review): ?>
 	            <a class="button" href="<?php echo admin_url("edit.php").'?page=show-diff&post='.$_GET["post"]; ?>">View Side-by-side difference</a>
 	          <?php endif; ?>
 
-	          <?php if ($allow_submit_for_review): ?>
-	            <input name="submit_for_review" type="submit" class="button button-primary button-large" id="submit_for_review" value="<?php echo $submit_label; ?>">
+	          <?php if ($allow_submit_for_review ): ?>
+	          	<?php $class = ""; if($submitted_count > 0 ){
+	          		$class=" waiting";
+	          		$submit_label = "Submit update for another review";
+	          	?>
+	            <span style="text-align:center; display:block;">Update Submitted, awaiting approval</span>
+	            <?php } ?>
+	            <input name="submit_for_review" type="submit" class="button button-primary button-large<?php echo $class;?>" id="submit_for_review" value="<?php echo $submit_label; ?>">
+
 	          <?php endif ?>
 
 	          <?php if ($allow_merge_back): ?>
@@ -313,6 +319,14 @@ class DuplicatePost{
 	          margin-bottom:5px;
 	          width:100%;
 	          text-align: center;
+	        }
+	        .button.button-primary.button-large.waiting {
+				background: #5E757E;
+				border-color: #5E757E;
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				color: #fff;
+				text-decoration: none;
 	        }
 	      </style>
 			<script type="text/javascript">
@@ -361,11 +375,17 @@ class DuplicatePost{
 	    }else if(isset($_POST["submit_for_review"])){
 
 	      if( $allow_submit_for_review ){
-	      	echo 'save'; exit;
+	      	//echo 'save'; exit;
+	      	$submitted_count = get_post_meta($post_id,"_dp_submited", true);
+	      	if(!$submitted_count){
+	      		$submitted_count = 1;
+	      	} else {
+	      		$submitted_count++;
+	      	}
 	        // Only notify users the first time it is submited
-	        if( get_post_meta($post_id,"_dp_submited", true) != "yes" ){
+	        //if( get_post_meta($post_id,"_dp_submited", true) != "yes" ){
 
-	          update_post_meta($post_id, "_dp_submited", "yes" );
+	          update_post_meta($post_id, "_dp_submited", $submitted_count);
 
 	          global $current_user;
 	          get_currentuserinfo();
@@ -384,23 +404,28 @@ class DuplicatePost{
 	          $new_post = get_post($post_id);
 
 	          $message = implode( array(
-	            "An update has been posted for ",
-	            "<a href='".get_permalink($post->ID)."'>'".$post->post_title."'</a>",
-	            " by ".$current_user->display_name . "\n\n<br><br>",
-	            " To review the update follow the link ",
-	            "<a href='".get_permalink($new_post->ID)."'>'".$new_post->post_title."'</a>. ",
-	            "<a href='".admin_url("edit.php").'?page=show-diff&post='.$new_post->ID."'>Click here</a> to view changes side-by-side."
-	          ) );
+	          	"Hello there!<br><br>",
+			    "An update has been posted for ",
+			    "<a href='".get_permalink($post->ID)."'>'".$post->post_title."'</a> ",
+			    "by <strong>".$current_user->display_name . "</strong>",
+			    "<br><br> To review and approve the change, follow this link: ",
+			    "<a href='".get_permalink($new_post->ID)."'>'".$new_post->post_title."'</a>.<br><br>",
+			    "<h2><a href='".admin_url("edit.php").'?page=show-diff&post='.$new_post->ID."'>View the side by side changes here</a></h2>"
+			  ) );
 
 	          $message = apply_filters("duplicate_post_notification_message", $message, $post, $new_post, $current_user );
 
 	          if(!$message == false){
-		          add_filter( 'wp_mail_content_type', 'set_html_content_type' );
-		          wp_mail( $global_admin_emails, "There is a new update pending review", $message );
-		          remove_filter( 'wp_mail_content_type', 'set_html_content_type' );
+	          		$from_name = get_option( 'blogname' , '');
+					$from_email = get_option( 'admin_email' );
+					$headers	= "From: " . $from_name . " <" . $from_email . ">\n";
+					$headers .= 'Content-type: text/html';
+					/* todo add filters here */
+		          wp_mail( $global_admin_emails, "[Post Update] - There is a new update pending review", $message, $headers );
+
 		      }
 
-	        }
+	        //}
 	      }
 	    }
 
@@ -411,13 +436,16 @@ class DuplicatePost{
 
 
 	public function register_my_custom_submenu_page() {
-	  add_submenu_page( '', 'Show Differences', 'Show Differences', 'manage_options', 'show-diff', array($this,'show_diff_callback') );
+	  add_submenu_page( '', 'Show Differences', 'Show Differences', 'read', 'show-diff', array($this,'show_diff_callback') );
 	}
 
 	/* Side by side difference page content */
 	public function show_diff_callback() {
+
+	  $allow_merge_back = DuplicatePost::duplicate_post_is_current_user_allowed_to_merge_back();
+
 	  echo '<div class="wrap" id="show_diff_wrapper">';
-	    echo '<div id="icon-tools" class="icon32"></div><h2>Show differences</h2>';
+	    echo '<div id="icon-tools" class="icon32"></div><h2>Edit Differences</h2>';
 
 	  if(!isset($_GET["post"])){
 	    echo "<div id='message' class='error'><p>Post ID is required</p></div>";
@@ -445,8 +473,11 @@ class DuplicatePost{
 	  $merge_back_link = admin_url()."?action=duplicate_post_save_to_original&post=".$post_id;
 	  echo "<div class='show_diff_actions'>";
 	    echo "<a class='button' href='".get_edit_post_link($original_post_id)."'>Go to original post</a>";
-	    echo "<a class='button' href='".get_edit_post_link($post_id)."'>Go to proposed post</a>";
-	    echo "<a class='button button-primary' href='".$merge_back_link."'>Merge back to Original Post</a>";
+	    echo "<a class='button' href='".get_edit_post_link($post_id)."'>Go to duplicated post</a>";
+	    if($allow_merge_back){
+	    	 echo "<a class='button button-primary' href='".$merge_back_link."'>Merge back to Original Post</a>";
+	    }
+
 	  echo "</div>";
 
 	  echo $this->get_side_by_side_diff($post_id, $original_post_id);
@@ -521,7 +552,7 @@ class DuplicatePost{
 
 		// Include two sample files for comparison
 		echo "<div class='all_differences'>";
-		echo "<table class='Differences diff_header'><tr>
+		echo "<table width='100%' class='Differences diff_header'><tr>
 		  <th></th>
 		  <td>Old: <a href='".get_edit_post_link($original_post)."'>".$original_post->post_title."</a></td>
 		  <th></th>
@@ -549,6 +580,7 @@ class DuplicatePost{
 
 		?>
 		<style type="text/css">
+		.ChangeReplace, .Differences.DifferencesSideBySide {max-width: 100%;}
 		.all_differences{
 		  background:white;
 		  padding:15px;
