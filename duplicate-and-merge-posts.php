@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Duplicate, Edit and Merge Posts
+Plugin Name: Duplicate and Merge Posts
 Plugin URI: http://www.exygy.com
 Description: Duplicate posts, edit them and then merge them back to the original post
 Version: 1.0.1
@@ -10,9 +10,9 @@ Text Domain: dem
 Domain Path: lang
 */
 
-if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
+if (!class_exists('Duplicate_And_Merge_Plugin')) {
 
-	final class Duplicate_Edit_And_Merge_Plugin {
+	final class Duplicate_And_Merge_Plugin {
 
 		/**
 		 * START -> PHP VERSION CHECKS
@@ -84,7 +84,7 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 		 */
 
 		/**
-		* Main Duplicate_Edit_And_Merge_Plugin Instance
+		* Main Duplicate_And_Merge_Plugin Instance
 		*/
 		public function __construct() {
 			self::define_constants();
@@ -125,7 +125,6 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 			    "<a href='".admin_url("edit.php").'?page=show-diff&post='.$new_post->ID."'>Click here</a> to view changes side-by-side."
 			  ) );
 			},10,4);
-
 
 			$emails = explode("\n", $settings['notify_emails']);
 
@@ -172,12 +171,12 @@ if (!class_exists('Duplicate_Edit_And_Merge_Plugin')) {
 	}
 
 	/* Initiate Plugin */
-	if ( Duplicate_Edit_And_Merge_Plugin::is_valid_php_version() ) {
+	if ( Duplicate_And_Merge_Plugin::is_valid_php_version() ) {
 		// Get Inbound Now Running
-		$GLOBALS['Duplicate_Edit_And_Merge_Plugin'] = new Duplicate_Edit_And_Merge_Plugin;
+		$GLOBALS['Duplicate_And_Merge_Plugin'] = new Duplicate_And_Merge_Plugin;
 	} else {
 		// Show Fail
-		Duplicate_Edit_And_Merge_Plugin::fail_php_version();
+		Duplicate_And_Merge_Plugin::fail_php_version();
 	}
 
 

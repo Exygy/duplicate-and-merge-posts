@@ -14,6 +14,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 
 			add_action( 'admin_menu', array( &$this , 'loadSettingsPage' ) );
 			add_action( 'plugins_loaded', array( &$this , 'init') );
+
 		}
 
 		public function init() {
@@ -29,14 +30,13 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 		}
 
 		public function loadSettingsPage() {
-			//$this->pageHook = add_options_page( 'Settings API', 'Settings API', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
-			$this->pageHook = add_menu_page( 'Dupe, Edit, Merge', 'Dupe, Edit, Merge', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
+			$this->pageHook = add_options_page( 'Duplicate & Merge', 'Duplicate & Merge', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
+			/* add settings page */
+			//$this->pageHook = add_menu_page( 'Dupe, Edit, Merge', 'Dupe, Edit, Merge', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
 		}
 
-
-
 		public function register_my_custom_menu_page(){
-		    add_menu_page( 'custom menu title', 'custom menu', 'manage_options', 'myplugin/myplugin-admin.php', '', plugins_url( 'myplugin/images/icon.png' ), 6 );
+		   // add_menu_page( 'custom menu title', 'custom menu', 'manage_options', 'myplugin/myplugin-admin.php', '', plugins_url( 'myplugin/images/icon.png' ), 6 );
 		}
 
 		public function tabs( $tabs ) {
@@ -75,6 +75,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'callback' => false,
 				'page_hook' => $this->pageHook
 			);
+			//print_r($this->pageHook);
 			/*
 			$sections[] = array(
 				'tab' => 'basic' ,
@@ -88,7 +89,12 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 
 			return $sections;
 		}
+		static function get_registered_post_types() {
+		    global $wp_post_types;
 
+		    return array_keys( $wp_post_types );
+
+		}
 		public function fields( $fields ) {
 			global $wp_roles;
      		$roles = $wp_roles->get_names();
@@ -98,9 +104,10 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
      		);
 
      		$output = 'names'; // names or objects, note names is the default
-     		$operator = 'and'; // 'and' or 'or'
 
-     		$post_types = get_post_types( $args, $output, $operator );
+
+     		$post_types = get_post_types( $args, $output );
+     		//$post_types = self::get_registered_post_types();
      		unset($post_types['attachment']);
      		//print_r($roles);
 
@@ -108,7 +115,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'plugin_id' => 'dem',
 				'id' => 'notify_emails',
 				'position' => 1,
-				'page_hook' => 'toplevel_page_settings_dem',
+				'page_hook' => 'settings_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'dem_main_settings',
 				'title' => __('Admin Emails', 'dem'),
@@ -119,12 +126,11 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'default' => 'your@email.com'
 			);
 
-
 			$fields[] = array(
 				'plugin_id' => 'dem',
 				'id' => 'edit_access',
 				'position' => 4,
-				'page_hook' => 'toplevel_page_settings_dem',
+				'page_hook' => 'settings_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'dem_main_settings',
 				'title' => __('Duplicate/Edit Access Level:', 'dem'),
@@ -134,11 +140,12 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'options' => $roles,
 				'default' => array( 'administrator' , 'editor', 'author' )
 			);
+
 			$fields[] = array(
 				'plugin_id' => 'dem',
 				'id' => 'merge_access',
 				'position' => 6,
-				'page_hook' => 'toplevel_page_settings_dem',
+				'page_hook' => 'settings_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'dem_main_settings',
 				'title' => __('Merge Access Level:', 'dem'),
@@ -148,11 +155,12 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'options' => $roles,
 				'default' => array( 'administrator' , 'editor' )
 			);
+
 			$fields[] = array(
 				'plugin_id' => 'dem',
 				'id' => 'exclude_post_types',
 				'position' => 22,
-				'page_hook' => 'toplevel_page_settings_dem',
+				'page_hook' => 'settings_page_settings_dem',
 				'tab' => 'basic',
 				'section' => 'dem_main_settings',
 				'title' => __('Exclude Post Types:', 'dem'),
@@ -162,7 +170,6 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 				'options' => $post_types
 			);
 
-
 			return $fields;
 		}
 
@@ -171,7 +178,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 
 			$args = array(
 				'page_icon' => '',
-				'page_title' => 'Duplicate, Edit, and Merge Settings',
+				'page_title' => 'Duplicate and Merge Settings',
 				'tab_icon' => 'options-general'
 				);
 
