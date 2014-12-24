@@ -37,14 +37,12 @@ http://www.youtube.com/watch?v=-qaYgwV7p-8
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==
-*Can I create my own call to action designs?,
-*Yes! You can learn how to <a href="http://plugins.inboundnow.com/docs/dev/creating-templates/">create your own call to action template here</a>.
+
 
 == Screenshots ==
 
-1. Convert more web traffic with calls to action to drive the visitor into a landing page or capture their email address right in the call to action
-2. Create Popup Calls to action and capture more emails
-ost types
+1.
+2.
 
 == Changelog ==
 

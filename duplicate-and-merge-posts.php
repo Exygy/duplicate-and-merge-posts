@@ -130,7 +130,7 @@ if (!class_exists('Duplicate_And_Merge_Plugin')) {
 
 			// TODO move admin emails to class
 			DuplicatePost::_init(array(
-			  "duplicate_post_title_prefix" => "Proposed Update: ",
+			  "duplicate_post_title_prefix" => "[Duplicated] ",
 			  "duplicate_post_show_adminbar" => true,
 			  "duplicate_post_show_row" => true,
 			  "duplicate_post_show_submitbox" => true,
