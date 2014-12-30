@@ -1,15 +1,15 @@
-=== WordPress Calls to Action ===
+=== Duplicate and Merge Posts ===
 
-Contributors: David Wells, adbox
-Donate link: mailto:marketplace@inboundnow.com
+Contributors: Exygy, David Wells
+Donate link: mailto:
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tags: Call to action, Calls to Action, CTA, inbound marketing, call outs, ad management, split testing, a b test, a b testing, a/b test, a/b testing, popups, email list, landing page, pop up, list building, inbound now, wp-call-to-actions, cpa, click tracking, ad placement, banner ads, slide in call outs, fly ins, like to download, social media share buttons
+Tags: duplicate post, copy, clone, merge, fork
 Requires at least: 3.8
 Tested up to: 4.1
-Stable Tag: 2.2.3
+Stable Tag: 1.0.1
 
-Create Calls to Action for your WordPress site. Monitor and improve conversion rates, run A/B split tests, customize your own CTA templates and more.
+Duplicate existing pages on your site, edit them, and merge them back over the original. Think drafts on steriods.
 
 == Description ==
 
@@ -41,8 +41,11 @@ http://www.youtube.com/watch?v=-qaYgwV7p-8
 
 == Screenshots ==
 
-1.
-2.
+1. Here you can copy the post you're editing to a new draft.
+2. By clicking on "Clone" the post is cloned immediately. "New draft" leads to the edit screen.
+3. The options page.
+4. The template tag manually added to Twenty Ten theme. Click on the "Copy to a new draft" link and you're redirected to the edit screen for a new draft copy of your post.
+5. The admin bar link.
 
 == Changelog ==
 
