@@ -1,7 +1,7 @@
 === Duplicate and Merge Posts ===
 
 Contributors: Exygy, David Wells
-Donate link: mailto:
+Donate link: mailto: zach@exygy.com
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: duplicate post, copy, clone, merge, fork
@@ -21,15 +21,22 @@ You control who has access to duplicate, you also control who has the permission
 
 ** Here's the flow: **
 
-Orignal Post -> Clone -> Edit -> Merge back to Original Post
+Original Post -> Clone -> Edit -> Merge back to Original Post
 
-http://www.youtube.com/watch?v=-qaYgwV7p-8
+http://www.youtube.com/watch?v=5ngkWcIcpsE
 
 = Use Cases =
 
+* Speed up page updating/iteration process
 * Duplicate / clone posts for quicker page creation
-* Grant visitors the ability to sumbit typo fixes
+* Grant visitors the ability to submit typo fixes
 * Turn your site into a wiki
+
+= Contribute to the plugin =
+
+Pull requests welcome:
+
+https://github.com/Exygy/duplicate-and-merge-posts
 
 == Installation ==
 
@@ -39,13 +46,13 @@ http://www.youtube.com/watch?v=-qaYgwV7p-8
 == Frequently Asked Questions ==
 
 
+
 == Screenshots ==
 
-1. Here you can copy the post you're editing to a new draft.
-2. By clicking on "Clone" the post is cloned immediately. "New draft" leads to the edit screen.
-3. The options page.
-4. The template tag manually added to Twenty Ten theme. Click on the "Copy to a new draft" link and you're redirected to the edit screen for a new draft copy of your post.
-5. The admin bar link.
+1. Duplicate and edit the existing post
+2. Duplicate from the admin bar
+3. Submit updated copy for review, Merge back to the original Post, View Side by side differences, or save as a new post altogether
+4. View Side by Side differences
 
 == Changelog ==
 

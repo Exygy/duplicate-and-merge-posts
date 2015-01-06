@@ -30,7 +30,7 @@ if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 		}
 
 		public function loadSettingsPage() {
-			$this->pageHook = add_options_page( 'Duplicate & Merge', 'Duplicate & Merge', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
+			$this->pageHook = add_options_page( 'Duplicate & Merge Settings', 'Duplicate & Merge', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
 			/* add settings page */
 			//$this->pageHook = add_menu_page( 'Dupe, Edit, Merge', 'Dupe, Edit, Merge', 'manage_options', 'settings_dem', array( &$this , 'showPage' ) );
 		}
