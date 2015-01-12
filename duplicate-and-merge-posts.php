@@ -3,7 +3,7 @@
 Plugin Name: Duplicate and Merge Posts
 Plugin URI: http://www.exygy.com
 Description: Duplicate posts, edit them and then merge them back to the original post
-Version: 1.0.2
+Version: 1.0.3
 Author: Exygy, DavidWells
 Author URI: http://www.exygy.com
 License: GPL2
@@ -97,7 +97,7 @@ if (!class_exists('Duplicate_And_Merge_Plugin')) {
 		*/
 		private static function define_constants() {
 
-			define('DEM_CURRENT_VERSION', '1.0.2' );
+			define('DEM_CURRENT_VERSION', '1.0.3' );
 			define('DEM_URLPATH', plugins_url( '/' , __FILE__ ) );
 			define('DEM_PATH', WP_PLUGIN_DIR.'/'.plugin_basename( dirname(__FILE__) ).'/' );
 			define('DEM_SLUG', plugin_basename( dirname(__FILE__) ) );
