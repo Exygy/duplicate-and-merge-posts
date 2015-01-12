@@ -105,8 +105,10 @@ class DuplicatePost{
 
 	  	/* Exclude post types from settings */
 	  	if(isset($settings['exclude_post_types'])) {
-	  		if(in_array($postType, $settings['exclude_post_types'])){
-	  			$allowed = false;
+	  		if(is_array($settings['exclude_post_types'])){
+		  		if(in_array($postType, $settings['exclude_post_types'])){
+		  			$allowed = false;
+		  		}
 	  		}
 	  	}
 
