@@ -1,7 +1,5 @@
 <?php
-/*
-	Register Pro Settings screen
- */
+
 if ( ! class_exists('Duplicate_Edit_And_Merge_Settings') )
 {
 	class Duplicate_Edit_And_Merge_Settings {

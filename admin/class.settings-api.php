@@ -1,14 +1,4 @@
 <?php
-
-/**
- * Connections Settings API Wrapper Class
- *
- * @package Connections Settings API Wrapper Class
- * @copyright Copyright (c) 2012, Steven A. Zahm
- * @license http://opensource.org/licenses/gpl-2.0.php GNU Public License
- * @version 0.7.3.1
- */
-
 if ( ! class_exists('cnSettingsAPI') )
 {
 

@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: duplicate post, copy, clone, merge, fork
 Requires at least: 3.8
 Tested up to: 4.1
-Stable Tag: 1.0.3
+Stable Tag: 1.0.4
 
 Duplicate existing pages on your site, edit them, and merge them back over the original. Think drafts on steroids.
 
@@ -58,6 +58,9 @@ https://github.com/Exygy/duplicate-and-merge-posts
 4. View Side by Side differences
 
 == Changelog ==
+= 1.0.4 =
+* Update headers again!
+
 = 1.0.3 =
 * Update headers again!
 
