@@ -561,9 +561,6 @@ class DuplicatePost{
 	private function get_side_by_side_diff( $post_id, $original_post_id){
 		ob_start();
 
-		require_once 'php_diff/Diff.php';
-		require_once 'php_diff/Diff/Renderer/Html/SideBySide.php';
-
 		$post = get_post($post_id);
 		$original_post = get_post($original_post_id);
 
@@ -596,10 +593,6 @@ class DuplicatePost{
 		// Get post taxonomies
 		$fields = array_merge($fields, $this->get_post_taxonomies_for_diff( $post ) );
 
-		$options = array();
-		$renderer = new Diff_Renderer_Html_SideBySide;
-
-
 		// Include two sample files for comparison
 		echo "<div class='all_differences'>";
 		echo "<table width='100%' class='Differences diff_header'><tr>
@@ -610,14 +603,11 @@ class DuplicatePost{
 		</tr></table>";
 		foreach($fields as $field){
 
-		$a = explode("\n", ( $this->get_string_value( $field ,$original_post_id, $original_post ) ) );
-		$b = explode("\n", ( $this->get_string_value( $field ,$post_id         , $post ) ) );
+		$a = $this->get_string_value( $field ,$original_post_id, $original_post );
+		$b = $this->get_string_value( $field ,$post_id         , $post );
 		$field["label"] = ucfirst($field["label"]);
 
-		// Initialize the diff class
-		$diff = new Diff($a, $b, $options);
-		// Generate a side by side diff
-		$diff_html = $diff->Render($renderer);
+		$diff_html = wp_text_diff( $a, $b );
 
 		if($diff_html != ""){
 		  ?>
