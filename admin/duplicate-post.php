@@ -433,12 +433,11 @@ class DuplicatePost{
 
 	      if( $allow_submit_for_review ){
 	      	//echo 'save'; exit;
-	      	$submitted_count = get_post_meta($post_id,"_dp_submited", true);
-	      	if(!$submitted_count){
-	      		$submitted_count = 1;
-	      	} else {
-	      		$submitted_count++;
-	      	}
+
+			// Any non numeric value will be 0.
+			$submitted_count = absint( get_post_meta($post_id,"_dp_submited", true) );
+			$submitted_count++;
+
 	        // Only notify users the first time it is submited
 	        //if( get_post_meta($post_id,"_dp_submited", true) != "yes" ){
 
