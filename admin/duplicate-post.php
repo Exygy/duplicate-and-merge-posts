@@ -424,7 +424,8 @@ class DuplicatePost{
 	        unset($_POST["merge_back"]);
 
 	        DuplicatePost::_save_to_original( $post_id );
-	        wp_redirect( admin_url("post.php")."?post={$original_post_id}&action=edit" );
+			$redirect_url = add_query_arg( array( 'post' => absint( $original_post_id ), 'action' => 'edit' ), admin_url( 'post.php' ) );
+	        wp_redirect( $redirect_url );
 	        die();
 
 	      }
