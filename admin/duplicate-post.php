@@ -234,7 +234,7 @@ class DuplicatePost{
 		$link = __('Copy to a new draft', 'dem');
 
 		$post_type_obj = get_post_type_object( $post->post_type );
-		$link = '<a class="post-clone-link button" style="margin-bottom:5px;width:100%;text-align:center;" href="' . $url . '" title="'
+		$link = '<a class="post-clone-link button" style="margin-bottom:5px;width:100%;text-align:center;" href="' . esc_attr( $url ) . '" title="'
 		. esc_attr(__("Submit an update to this doc", 'dem'))
 		.'">' . $link . '</a>';
 		echo $before . apply_filters( 'duplicate_post_clone_post_link', $link, $post->ID ) . $after;
