@@ -384,7 +384,7 @@ class DuplicatePost{
 			//echo $_POST["save_as_new"];
 			$original_post_id = get_post_meta($post_id, '_dp_original', true);
 			if(!$original_post_id){
-				$original_post_id = $_POST['save_as_new_id'];
+				$original_post_id = absint( $_POST['save_as_new_id'] );
 			}
 			update_post_meta($post_id, "_dp_original_backup", $original_post_id);
 			/* then delete */
@@ -392,7 +392,11 @@ class DuplicatePost{
 		}
 		if(isset($_POST['revert_back_to_cloned'])) {
 			$o_post_id = get_post_meta($post_id, '_dp_original_backup', true);
-			update_post_meta($post_id, "_dp_original", $o_post_id);
+
+			// Original post ID from meta should be an integer.
+			if ( 0 !== absint( $o_post_id ) ) {
+				update_post_meta($post_id, "_dp_original", $o_post_id);
+			}
 			//echo 'yes' . $original_post_id;
 		}
 		if(isset($_POST['unlink_post_forever'])) {
