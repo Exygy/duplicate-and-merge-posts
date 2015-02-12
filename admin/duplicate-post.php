@@ -508,7 +508,7 @@ class DuplicatePost{
 	    return;
 	  }
 
-	  $post_id = $_GET["post"];
+	  $post_id = absint( $_GET["post"] );
 	  $post = get_post($post_id);
 	  if(!$post){
 	    echo "<div id='message' class='error'><p>Post does not exist or is already merged back</p></div>";
