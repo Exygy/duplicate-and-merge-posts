@@ -531,7 +531,7 @@ class DuplicatePost{
 	    echo "<a class='button' href='".get_edit_post_link($original_post_id)."'>Go to original post</a>";
 	    echo "<a class='button' href='".get_edit_post_link($post_id)."'>Go to duplicated post</a>";
 	    if($allow_merge_back){
-	    	 echo "<a class='button button-primary' href='".$merge_back_link."'>Merge back to Original Post</a>";
+	    	 echo "<a class='button button-primary' href='". esc_url( $merge_back_link ) ."'>Merge back to Original Post</a>";
 	    }
 
 	  echo "</div>";
