@@ -297,10 +297,12 @@ class DuplicatePost{
 	      <div id="publishing-action-update">
 	          <span class="spinner"></span>
 	          <input name="original_publish" type="hidden" id="original_publish" value="Update">
-	            <a class="button" href="<?php echo get_permalink($original_post_id); ?>">Go to original post</a>
+	            <a class="button" href="<?php echo esc_url( get_permalink( $original_post_id ) ); ?>">Go to original post</a>
 
-	          <?php if ($allow_merge_back || $allow_submit_for_review): ?>
-	            <a class="button" href="<?php echo admin_url("edit.php").'?page=show-diff&post='.$_GET["post"]; ?>">View Side-by-side difference</a>
+	          <?php if ($allow_merge_back || $allow_submit_for_review):
+				  $diff_url = add_query_arg( array( 'page' => 'show-diff', 'post' => absint( $_GET['post'] ) ), admin_url( 'edit.php' ) );
+				  ?>
+	            <a class="button" href="<?php echo esc_url( $diff_url ); ?>">View Side-by-side difference</a>
 	          <?php endif; ?>
 
 	          <?php if ($allow_submit_for_review ): ?>
