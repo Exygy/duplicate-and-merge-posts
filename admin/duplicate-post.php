@@ -323,7 +323,7 @@ class DuplicatePost{
 	            <input name="merge_back" type="submit" class="button button-primary button-large" id="merge_back" value="<?php echo $merge_label; ?>">
 
 	            <input name="save_as_new" type="submit" class="button save_as_new button-primary button-large" id="save_as_new" value="Save as New Post">
-	            <input name="save_as_new_id" type="hidden" id="save_as_new_id" value="<?php echo $original_post_id;?>">
+	            <input name="save_as_new_id" type="hidden" id="save_as_new_id" value="<?php echo esc_attr( $original_post_id );?>">
 	          <?php endif ?>
 	      </div>
 	      <style type="text/css">
