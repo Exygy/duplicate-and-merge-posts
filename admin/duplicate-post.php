@@ -981,7 +981,7 @@ class DuplicatePost{
 
 	function duplicate_post_save_to_original(){
 		if ( isset( $_GET['post'] ) ){
-			$original_post_id = get_post_meta( $_GET["post"], '_dp_original', true);
+			$original_post_id = absint( get_post_meta( $_GET["post"], '_dp_original', true) );
 			if($original_post_id){
 				$this->save_to_original( $_GET["post"] );
 
