@@ -234,7 +234,7 @@ class DuplicatePost{
 		$link = __('Copy to a new draft', 'dem');
 
 		$post_type_obj = get_post_type_object( $post->post_type );
-		$link = '<a class="post-clone-link button" style="margin-bottom:5px;width:100%;text-align:center;" href="' . $url . '" title="'
+		$link = '<a class="post-clone-link button" style="margin-bottom:5px;width:100%;text-align:center;" href="' . esc_attr( $url ) . '" title="'
 		. esc_attr(__("Submit an update to this doc", 'dem'))
 		.'">' . $link . '</a>';
 		echo $before . apply_filters( 'duplicate_post_clone_post_link', $link, $post->ID ) . $after;
@@ -297,10 +297,12 @@ class DuplicatePost{
 	      <div id="publishing-action-update">
 	          <span class="spinner"></span>
 	          <input name="original_publish" type="hidden" id="original_publish" value="Update">
-	            <a class="button" href="<?php echo get_permalink($original_post_id); ?>">Go to original post</a>
+	            <a class="button" href="<?php echo esc_url( get_permalink( $original_post_id ) ); ?>">Go to original post</a>
 
-	          <?php if ($allow_merge_back || $allow_submit_for_review): ?>
-	            <a class="button" href="<?php echo admin_url("edit.php").'?page=show-diff&post='.$_GET["post"]; ?>">View Side-by-side difference</a>
+	          <?php if ($allow_merge_back || $allow_submit_for_review):
+				  $diff_url = add_query_arg( array( 'page' => 'show-diff', 'post' => absint( $_GET['post'] ) ), admin_url( 'edit.php' ) );
+				  ?>
+	            <a class="button" href="<?php echo esc_url( $diff_url ); ?>">View Side-by-side difference</a>
 	          <?php endif; ?>
 
 	          <?php if ($allow_submit_for_review ): ?>
@@ -321,7 +323,7 @@ class DuplicatePost{
 	            <input name="merge_back" type="submit" class="button button-primary button-large" id="merge_back" value="<?php echo $merge_label; ?>">
 
 	            <input name="save_as_new" type="submit" class="button save_as_new button-primary button-large" id="save_as_new" value="Save as New Post">
-	            <input name="save_as_new_id" type="hidden" id="save_as_new_id" value="<?php echo $original_post_id;?>">
+	            <input name="save_as_new_id" type="hidden" id="save_as_new_id" value="<?php echo esc_attr( $original_post_id );?>">
 	          <?php endif ?>
 	      </div>
 	      <style type="text/css">
@@ -382,7 +384,7 @@ class DuplicatePost{
 			//echo $_POST["save_as_new"];
 			$original_post_id = get_post_meta($post_id, '_dp_original', true);
 			if(!$original_post_id){
-				$original_post_id = $_POST['save_as_new_id'];
+				$original_post_id = absint( $_POST['save_as_new_id'] );
 			}
 			update_post_meta($post_id, "_dp_original_backup", $original_post_id);
 			/* then delete */
@@ -390,7 +392,11 @@ class DuplicatePost{
 		}
 		if(isset($_POST['revert_back_to_cloned'])) {
 			$o_post_id = get_post_meta($post_id, '_dp_original_backup', true);
-			update_post_meta($post_id, "_dp_original", $o_post_id);
+
+			// Original post ID from meta should be an integer.
+			if ( 0 !== absint( $o_post_id ) ) {
+				update_post_meta($post_id, "_dp_original", $o_post_id);
+			}
 			//echo 'yes' . $original_post_id;
 		}
 		if(isset($_POST['unlink_post_forever'])) {
@@ -418,7 +424,8 @@ class DuplicatePost{
 	        unset($_POST["merge_back"]);
 
 	        DuplicatePost::_save_to_original( $post_id );
-	        wp_redirect( admin_url("post.php")."?post={$original_post_id}&action=edit" );
+			$redirect_url = add_query_arg( array( 'post' => absint( $original_post_id ), 'action' => 'edit' ), admin_url( 'post.php' ) );
+	        wp_redirect( $redirect_url );
 	        die();
 
 	      }
@@ -426,12 +433,11 @@ class DuplicatePost{
 
 	      if( $allow_submit_for_review ){
 	      	//echo 'save'; exit;
-	      	$submitted_count = get_post_meta($post_id,"_dp_submited", true);
-	      	if(!$submitted_count){
-	      		$submitted_count = 1;
-	      	} else {
-	      		$submitted_count++;
-	      	}
+
+			// Any non numeric value will be 0.
+			$submitted_count = absint( get_post_meta($post_id,"_dp_submited", true) );
+			$submitted_count++;
+
 	        // Only notify users the first time it is submited
 	        //if( get_post_meta($post_id,"_dp_submited", true) != "yes" ){
 
@@ -502,7 +508,7 @@ class DuplicatePost{
 	    return;
 	  }
 
-	  $post_id = $_GET["post"];
+	  $post_id = absint( $_GET["post"] );
 	  $post = get_post($post_id);
 	  if(!$post){
 	    echo "<div id='message' class='error'><p>Post does not exist or is already merged back</p></div>";
@@ -525,7 +531,7 @@ class DuplicatePost{
 	    echo "<a class='button' href='".get_edit_post_link($original_post_id)."'>Go to original post</a>";
 	    echo "<a class='button' href='".get_edit_post_link($post_id)."'>Go to duplicated post</a>";
 	    if($allow_merge_back){
-	    	 echo "<a class='button button-primary' href='".$merge_back_link."'>Merge back to Original Post</a>";
+	    	 echo "<a class='button button-primary' href='". esc_url( $merge_back_link ) ."'>Merge back to Original Post</a>";
 	    }
 
 	  echo "</div>";
@@ -965,7 +971,7 @@ class DuplicatePost{
 
 	function duplicate_post_save_to_original(){
 		if ( isset( $_GET['post'] ) ){
-			$original_post_id = get_post_meta( $_GET["post"], '_dp_original', true);
+			$original_post_id = absint( get_post_meta( $_GET["post"], '_dp_original', true) );
 			if($original_post_id){
 				$this->save_to_original( $_GET["post"] );
 
