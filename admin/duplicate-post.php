@@ -276,7 +276,7 @@ class DuplicatePost{
 
 	    if($original_post_id){
 	      $label = "Update";
-	  	  $allow_submit_for_review = DuplicatePost::duplicate_post_is_current_user_allowed_to_copy();
+	  	  $allow_submit_for_review = apply_filters( 'duplicate_post_allow_submit_for_review', DuplicatePost::duplicate_post_is_current_user_allowed_to_copy(), $original_post_id );
 	      $allow_merge_back = DuplicatePost::duplicate_post_is_current_user_allowed_to_merge_back();
 
 	      $merge_label = "Merge back to Original Post";
