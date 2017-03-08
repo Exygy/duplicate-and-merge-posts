@@ -1164,9 +1164,10 @@ class DuplicatePost{
 		);
 
 		if($to_post_id != ''){
-			$new_post["post_title"] = $to_post->post_title;
-			$new_post["post_status"] = $to_post->post_status;
-			$new_post["ID"] = $to_post_id;
+			$new_post["post_title"] 	= $to_post->post_title;
+			$new_post["post_status"] 	= $to_post->post_status;
+			$new_post["ID"] 			= $to_post_id;
+			$new_post["post_author"] 	= $to_post->post_author;
 		}
 
 		if($this->get_option('duplicate_post_copydate') == 1){
